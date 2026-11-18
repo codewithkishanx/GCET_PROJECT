@@ -1,0 +1,42 @@
+{
+  "name": "dsa-arcade",
+  "version": "0.1.0",
+  "private": true,
+  "description": "DSA Arcade - Learn & Debug: interactive DSA learning and secure code judging platform",
+  "workspaces": [
+    "shared",
+    "backend",
+    "execution-worker"
+  ],
+  "scripts": {
+    "build:shared": "npm run build -w @dsa/shared",
+    "build": "npm run build:shared && npm run build -w @dsa/backend && npm run build -w @dsa/worker",
+    "dev": "npm run build:shared && node scripts/dev.mjs",
+    "dev:backend": "npm run build:shared && npm run dev -w @dsa/backend",
+    "dev:worker": "npm run build:shared && npm run dev -w @dsa/worker",
+    "dev:frontend": "npm run dev --prefix frontend",
+    "build:frontend": "npm run build --prefix frontend",
+    "test:frontend": "npm run test --prefix frontend",
+    "start": "npm run start -w @dsa/backend",
+    "test": "npm run build:shared && npm run test -w @dsa/backend && npm run test -w @dsa/worker",
+    "test:backend": "npm run build:shared && npm run test -w @dsa/backend",
+    "test:worker": "npm run build:shared && npm run test -w @dsa/worker",
+    "lint": "eslint backend/src shared/src execution-worker/src",
+    "seed": "npm run seed -w @dsa/backend",
+    "create-admin": "npm run create-admin -w @dsa/backend",
+    "reconcile-points": "npm run reconcile-points -w @dsa/backend",
+    "infra:up": "docker compose up -d",
+    "infra:down": "docker compose down",
+    "infra:logs": "docker compose logs -f",
+    "images:build": "npm run images:build -w @dsa/worker"
+  },
+  "devDependencies": {
+    "eslint": "^9.39.0",
+    "prettier": "^3.6.2",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.46.0"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

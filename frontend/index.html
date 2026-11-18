@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="DSA Arcade — learn data structures and algorithms through step-by-step visualizations, debug broken code, and climb the leaderboard."
+    />
+    <meta name="color-scheme" content="light dark" />
+    <title>DSA Arcade — Learn &amp; Debug</title>
+    <script>
+      // Applied before paint to avoid a flash of the wrong theme.
+      ;(function () {
+        try {
+          var stored = localStorage.getItem('dsa-arcade.theme')
+          var dark =
+            stored === 'dark' ||
+            (!stored && window.matchMedia('(prefers-color-scheme: dark)').matches)
+          document.documentElement.classList.toggle('dark', dark)
+        } catch (error) {
+          /* storage unavailable: keep the default class */
+        }
+      })()
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

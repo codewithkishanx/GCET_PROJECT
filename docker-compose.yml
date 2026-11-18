@@ -1,0 +1,35 @@
+# Local infrastructure for DSA Arcade.
+#   docker compose up -d
+# MongoDB and Redis are bound to loopback only. The judge never runs here:
+# submitted code is executed by execution-worker in throwaway containers with
+# no network, no host mounts and no access to these services.
+services:
+  mongo:
+    image: mongo:7
+    container_name: dsa-arcade-mongo
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: dsa-arcade-redis
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:6379:6379"
+    command: ["redis-server", "--save", "", "--appendonly", "no"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  mongo-data:

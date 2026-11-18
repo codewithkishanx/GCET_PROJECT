@@ -1,0 +1,322 @@
+@import 'tailwindcss';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ---------------------------------------------------------------------------
+   Design tokens - Crafted with Apple Design and Unslop principles.
+   - Restrained, monochromatic neutral ramps (OLED black / Cupertino white).
+   - Single intentional accent (Apple SF Blue).
+   - Translucent glass layers, fine hairline borders, physical spring feedback.
+--------------------------------------------------------------------------- */
+:root {
+  --background: #fbfbfd;
+  --surface: #ffffff;
+  --surface-raised: #ffffff;
+  --surface-sunken: #f5f5f7;
+  --foreground: #1d1d1f;
+  --muted-foreground: #86868b;
+  --border: rgba(0, 0, 0, 0.08);
+  --border-strong: rgba(0, 0, 0, 0.16);
+  --primary: #0071e3;
+  --primary-foreground: #ffffff;
+  --primary-soft: rgba(0, 113, 227, 0.08);
+  --ring: rgba(0, 113, 227, 0.35);
+  --success: #34c759;
+  --success-soft: rgba(52, 199, 89, 0.12);
+  --warning: #ff9500;
+  --warning-soft: rgba(255, 149, 0, 0.12);
+  --danger: #ff3b30;
+  --danger-soft: rgba(255, 59, 48, 0.12);
+  --info: #0071e3;
+  --info-soft: rgba(0, 113, 227, 0.08);
+  --shadow-color: 220 20% 50%;
+  color-scheme: light;
+}
+
+.dark {
+  --background: #000000;
+  --surface: #161618;
+  --surface-raised: #1c1c1e;
+  --surface-sunken: #0c0c0e;
+  --foreground: #f5f5f7;
+  --muted-foreground: #86868b;
+  --border: rgba(255, 255, 255, 0.09);
+  --border-strong: rgba(255, 255, 255, 0.18);
+  --primary: #2997ff;
+  --primary-foreground: #000000;
+  --primary-soft: rgba(41, 151, 255, 0.12);
+  --ring: rgba(41, 151, 255, 0.45);
+  --success: #30d158;
+  --success-soft: rgba(48, 209, 88, 0.15);
+  --warning: #ff9f0a;
+  --warning-soft: rgba(255, 159, 10, 0.15);
+  --danger: #ff453a;
+  --danger-soft: rgba(255, 69, 58, 0.15);
+  --info: #64d2ff;
+  --info-soft: rgba(100, 210, 255, 0.15);
+  --shadow-color: 0 0% 0%;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", system-ui, -apple-system, sans-serif;
+  --font-mono:
+    ui-monospace, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-surface-sunken: var(--surface-sunken);
+  --color-foreground: var(--foreground);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-soft: var(--primary-soft);
+  --color-ring: var(--ring);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-info: var(--info);
+  --color-info-soft: var(--info-soft);
+
+  --radius-card: 1rem;
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    font-synthesis-weight: none;
+    text-rendering: optimizeLegibility;
+    min-height: 100dvh;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  }
+
+  ::selection {
+    background-color: color-mix(in srgb, var(--primary) 24%, transparent);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+
+  /* Smooth, slim Apple-style scrollbars */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-strong) transparent;
+  }
+
+  /* Tabular numbers for accurate alignments */
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@layer components {
+  /* Apple Glass Bar */
+  .glass-header {
+    background: color-mix(in srgb, var(--background) 75%, transparent);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* Apple Card Material: Subtle hairline, soft diffuse depth */
+  .card {
+    background-color: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+    transition: transform 140ms cubic-bezier(0.16, 1, 0.3, 1),
+                box-shadow 140ms cubic-bezier(0.16, 1, 0.3, 1),
+                border-color 140ms ease;
+  }
+
+  .card:hover {
+    box-shadow: 0 8px 30px -4px rgba(0, 0, 0, 0.08);
+  }
+
+  .dark .card:hover {
+    box-shadow: 0 12px 32px -4px rgba(0, 0, 0, 0.45);
+    border-color: var(--border-strong);
+  }
+
+  /* Apple Glass Floating Surface */
+  .glass-card {
+    background-color: color-mix(in srgb, var(--surface) 80%, transparent);
+    backdrop-filter: blur(18px) saturate(180%);
+    -webkit-backdrop-filter: blur(18px) saturate(180%);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.06);
+  }
+
+  .dark .glass-card {
+    box-shadow: 0 16px 40px 0 rgba(0, 0, 0, 0.4);
+  }
+
+  /* Apple tactile physical press */
+  .apple-press {
+    transition: transform 100ms ease-out, opacity 100ms ease-out;
+  }
+  .apple-press:active {
+    transform: scale(0.975);
+  }
+
+  .prose-arcade {
+    color: var(--foreground);
+    line-height: 1.65;
+  }
+
+  .prose-arcade > * + * {
+    margin-top: 1rem;
+  }
+
+  .prose-arcade h1,
+  .prose-arcade h2,
+  .prose-arcade h3,
+  .prose-arcade h4 {
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+    margin-top: 2rem;
+  }
+
+  .prose-arcade h1 {
+    font-size: 1.75rem;
+  }
+
+  .prose-arcade h2 {
+    font-size: 1.35rem;
+  }
+
+  .prose-arcade h3 {
+    font-size: 1.125rem;
+  }
+
+  .prose-arcade p,
+  .prose-arcade li {
+    color: color-mix(in srgb, var(--foreground) 90%, var(--muted-foreground));
+  }
+
+  .prose-arcade ul,
+  .prose-arcade ol {
+    padding-left: 1.5rem;
+  }
+
+  .prose-arcade ul {
+    list-style: disc;
+  }
+
+  .prose-arcade ol {
+    list-style: decimal;
+  }
+
+  .prose-arcade li + li {
+    margin-top: 0.35rem;
+  }
+
+  .prose-arcade a {
+    color: var(--primary);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .prose-arcade blockquote {
+    border-left: 2px solid var(--primary);
+    padding-left: 1rem;
+    color: var(--muted-foreground);
+    font-style: italic;
+  }
+
+  .prose-arcade code {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    background-color: var(--surface-sunken);
+    border: 1px solid var(--border);
+    border-radius: 0.375rem;
+    padding: 0.125rem 0.375rem;
+  }
+
+  .prose-arcade pre {
+    background-color: var(--surface-sunken);
+    border: 1px solid var(--border);
+    border-radius: 0.875rem;
+    padding: 1rem;
+    overflow-x: auto;
+  }
+
+  .prose-arcade pre code {
+    background: none;
+    border: 0;
+    padding: 0;
+    font-size: 0.85rem;
+  }
+
+  .prose-arcade table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+  }
+
+  .prose-arcade th,
+  .prose-arcade td {
+    border: 1px solid var(--border);
+    padding: 0.5rem 0.75rem;
+    text-align: left;
+  }
+
+  .prose-arcade img {
+    border-radius: 0.875rem;
+    max-width: 100%;
+  }
+
+  .prose-arcade hr {
+    border-color: var(--border);
+  }
+}
+
+/* Apple Fluid Animations */
+@keyframes apple-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: apple-fade-in 220ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+    transform: none !important;
+  }
+}
