@@ -91,7 +91,7 @@ describe('RequireAuth', () => {
       probeError: new ApiError({ status: 0, kind: 'NETWORK', message: 'offline' }),
     })
     renderAt('/protected', <RequireAuth>secret</RequireAuth>)
-    expect(screen.getByText('API unreachable')).toBeInTheDocument()
+    expect(screen.getByText('Backend not working')).toBeInTheDocument()
     expect(screen.queryByText('login screen')).not.toBeInTheDocument()
   })
 })

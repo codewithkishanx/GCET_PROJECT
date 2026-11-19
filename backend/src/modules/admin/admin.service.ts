@@ -24,33 +24,97 @@ import type {
 export async function overview(queue: ExecutionQueue) {
   const since = new Date(Date.now() - 24 * 60 * 60 * 1_000);
 
-  const [users, challenges, submissions, posts, openReports, verdicts, recentSubmissions, heartbeat, queueCounts] =
-    await Promise.all([
-      UserModel.countDocuments(),
-      ChallengeModel.countDocuments(),
-      SubmissionModel.countDocuments(),
-      PostModel.countDocuments(),
-      ReportModel.countDocuments({ status: "open" }),
-      SubmissionModel.aggregate<{ _id: string | null; count: number }>([
-        { $match: { createdAt: { $gte: since } } },
-        { $group: { _id: "$verdict", count: { $sum: 1 } } },
-      ]),
-      SubmissionModel.find()
-        .sort({ createdAt: -1 })
-        .limit(10)
-        .select("userId challengeId language status verdict createdAt")
-        .lean(),
-      WorkerHeartbeatModel.findOne({ key: "worker" }).lean(),
-      queue.counts(),
-    ]);
+  const [
+    users,
+    activeUsers,
+    suspendedUsers,
+    challenges,
+    publishedChallenges,
+    submissions,
+    submissionsLast24h,
+    acceptedSubmissions,
+    posts,
+    openReports,
+    verdicts,
+    recentSubmissions,
+    recentAudits,
+    heartbeat,
+    queueCounts,
+  ] = await Promise.all([
+    UserModel.countDocuments(),
+    UserModel.countDocuments({ status: "active" }),
+    UserModel.countDocuments({ status: "suspended" }),
+    ChallengeModel.countDocuments(),
+    ChallengeModel.countDocuments({ status: "published" }),
+    SubmissionModel.countDocuments(),
+    SubmissionModel.countDocuments({ createdAt: { $gte: since } }),
+    SubmissionModel.countDocuments({ verdict: "ACCEPTED" }),
+    PostModel.countDocuments(),
+    ReportModel.countDocuments({ status: "open" }),
+    SubmissionModel.aggregate<{ _id: string | null; count: number }>([
+      { $match: { createdAt: { $gte: since } } },
+      { $group: { _id: "$verdict", count: { $sum: 1 } } },
+    ]),
+    SubmissionModel.find()
+      .sort({ createdAt: -1 })
+      .limit(10)
+      .select("userId challengeId language status verdict createdAt")
+      .lean(),
+    AuditLogModel.find()
+      .sort({ createdAt: -1 })
+      .limit(10)
+      .lean(),
+    WorkerHeartbeatModel.findOne({ key: "worker" }).lean(),
+    queue.counts(),
+  ]);
 
   const verdictBreakdown: Record<string, number> = {};
   for (const row of verdicts) {
     verdictBreakdown[row._id ?? "IN_PROGRESS"] = row.count;
   }
 
+  const waiting = queueCounts?.waiting ?? 0;
+  const active = queueCounts?.active ?? 0;
+  const failed = queueCounts?.failed ?? 0;
+
+  const recentActivity = [
+    ...recentAudits.map((a) => ({
+      id: String(a._id),
+      type: a.action,
+      summary: `${a.action} on ${a.targetType} ${a.targetId ?? ""}`.trim(),
+      actor: a.actorId ? String(a.actorId) : "system",
+      at: a.createdAt ? new Date(a.createdAt).toISOString() : new Date().toISOString(),
+    })),
+    ...recentSubmissions.map((s) => ({
+      id: String(s._id),
+      type: "submission",
+      summary: `Submission for ${s.challengeId} (${s.language}): ${s.verdict ?? s.status}`,
+      actor: String(s.userId),
+      at: s.createdAt ? new Date(s.createdAt).toISOString() : new Date().toISOString(),
+    })),
+  ]
+    .sort((a, b) => new Date(b.at).getTime() - new Date(a.at).getTime())
+    .slice(0, 15);
+
   return {
-    counts: { users, challenges, submissions, posts, openReports },
+    counts: {
+      users,
+      activeUsers,
+      suspendedUsers,
+      challenges,
+      publishedChallenges,
+      submissions,
+      submissionsLast24h,
+      acceptedSubmissions,
+      posts,
+      openReports,
+    },
+    queue: {
+      waiting,
+      active,
+      failedLast24h: failed,
+    },
+    recentActivity,
     verdictBreakdown24h: verdictBreakdown,
     recentSubmissions,
     execution: {

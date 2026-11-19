@@ -15,7 +15,7 @@ export function ErrorState({
   const network = apiError?.isNetworkError ?? false
   const Icon = network ? CloudOff : apiError?.kind === 'FORBIDDEN' ? ShieldAlert : ServerCrash
   const title = network
-    ? 'API unreachable'
+    ? 'Backend not working'
     : apiError?.kind === 'FORBIDDEN'
       ? 'Not allowed'
       : 'Could not load this'

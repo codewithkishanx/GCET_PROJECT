@@ -1,5 +1,4 @@
 import { AlertTriangle, RefreshCw } from 'lucide-react'
-import { API_BASE_URL } from '@/lib/http'
 import { useAuth } from '@/features/auth/auth-context'
 import { Button } from '@/components/ui/button'
 
@@ -16,9 +15,7 @@ export function ApiStatusBanner() {
       <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-x-3 gap-y-2 px-4 py-2 text-xs text-warning sm:px-6">
         <AlertTriangle className="size-3.5 shrink-0" aria-hidden="true" />
         <p className="min-w-0 flex-1">
-          <span className="font-semibold">API unreachable.</span> Live data cannot load. The
-          frontend is pointing at <code className="font-mono">{API_BASE_URL}</code> — start the
-          backend or set <code className="font-mono">VITE_API_BASE_URL</code>.
+          <span className="font-semibold">Backend not working.</span> Live data cannot load.
         </p>
         <Button
           size="sm"

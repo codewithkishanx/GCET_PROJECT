@@ -1,5 +1,5 @@
 import { useInfiniteQuery } from '@tanstack/react-query'
-import { Code2, Filter, Search, Terminal } from 'lucide-react'
+import { Code2, Filter, Search } from 'lucide-react'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Page } from '@/components/layout/public-layout'
@@ -47,13 +47,6 @@ export function ChallengesPage() {
         eyebrow="Debug"
         title="Challenges"
         description="Each challenge ships with intentionally broken starter code. Fix it, submit it, and the judge returns a verdict against server-side tests."
-        actions={
-          <Link to="/playground">
-            <Button variant="secondary" icon={Terminal}>
-              JS playground
-            </Button>
-          </Link>
-        }
       />
 
       <div className="card mb-6 flex flex-col gap-3 p-3.5 rounded-2xl sm:flex-row sm:items-center">
@@ -120,22 +113,7 @@ export function ChallengesPage() {
       {query.isPending ? <SkeletonList rows={4} /> : null}
 
       {query.isError ? (
-        <div className="space-y-4">
-          <ErrorState error={query.error} onRetry={() => void query.refetch()} />
-          <div className="card flex flex-col items-center gap-2.5 p-8 text-center rounded-2xl">
-            <Terminal className="size-6 text-primary" aria-hidden="true" />
-            <p className="text-sm font-semibold text-foreground">Local playground</p>
-            <p className="max-w-md text-xs text-muted-foreground leading-relaxed">
-              The JavaScript playground executes locally in a Web Worker, so you can test code and inspect steps
-              even when the remote judge is offline.
-            </p>
-            <Link to="/playground">
-              <Button size="sm" variant="secondary" className="mt-2">
-                Open local runner
-              </Button>
-            </Link>
-          </div>
-        </div>
+        <ErrorState error={query.error} onRetry={() => void query.refetch()} />
       ) : null}
 
       {!query.isPending && !query.isError && items.length === 0 ? (

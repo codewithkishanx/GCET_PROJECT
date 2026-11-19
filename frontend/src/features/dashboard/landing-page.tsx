@@ -252,7 +252,7 @@ export function LandingPage() {
         <div className="rounded-2xl border border-border bg-surface p-6 sm:p-7">
           <h2 className="text-sm font-semibold tracking-tight text-foreground">What is real in this build</h2>
           <p className="mt-1.5 text-xs text-muted-foreground leading-relaxed max-w-3xl">
-            Visualisers, playback, and demo runs execute entirely in your browser without artificial delay.
+            Visualisers and interactive algorithm playback execute entirely in your browser without artificial delay.
             Accounts, challenges, submissions, points, and community content are served by the Express API and judged
             in secure containerized environments.
           </p>

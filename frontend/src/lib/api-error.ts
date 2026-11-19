@@ -92,7 +92,7 @@ export function isApiError(error: unknown): error is ApiError {
 export function describeError(error: unknown): string {
   if (isApiError(error)) {
     if (error.kind === 'NETWORK') {
-      return 'The API is unreachable. Check that the server is running and the base URL is correct.'
+      return 'Backend not working. Please check that the server is running.'
     }
     if (error.kind === 'TIMEOUT') {
       return 'The API took too long to respond. Try again.'

@@ -33,7 +33,7 @@ describe('ApiError', () => {
 
   it('explains network errors without leaking internals', () => {
     const message = describeError(new ApiError({ status: 0, kind: 'NETWORK', message: 'raw' }))
-    expect(message).toContain('unreachable')
+    expect(message).toContain('Backend not working')
     expect(message).not.toContain('raw')
   })
 
@@ -124,7 +124,7 @@ describe('http client', () => {
     fetchMock.mockRejectedValue(new TypeError('Failed to fetch'))
     const error = await http.get('/x').catch((caught: unknown) => caught)
     expect(isApiError(error) && error.kind).toBe('NETWORK')
-    expect(describeError(error)).toContain('unreachable')
+    expect(describeError(error)).toContain('Backend not working')
   })
 
   it('distinguishes caller cancellation from a timeout', async () => {

@@ -10,7 +10,6 @@ import { useToast } from '@/components/ui/toast'
 import { useAuth } from '@/features/auth/auth-context'
 import { useDocumentTitle } from '@/hooks/use-document-title'
 import { describeError } from '@/lib/api-error'
-import { API_BASE_URL } from '@/lib/http'
 import { z } from 'zod'
 
 const schema = z.object({
@@ -61,9 +60,6 @@ export function LoginPage() {
             <li>• Points come only from accepted submissions.</li>
             <li>• Sign-in failures are intentionally generic.</li>
           </ul>
-          <p className="mt-8 rounded-lg border border-border bg-surface p-3 font-mono text-[11px] text-muted-foreground">
-            API base: {API_BASE_URL}
-          </p>
         </div>
 
         <div className="card p-6">

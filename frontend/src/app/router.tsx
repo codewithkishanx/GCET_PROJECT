@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router-dom'
+import { createBrowserRouter, Navigate } from 'react-router-dom'
 import { AdminLayout } from '@/components/layout/admin-layout'
 import { AppLayout } from '@/components/layout/app-layout'
 import { PublicLayout } from '@/components/layout/public-layout'
@@ -24,7 +24,6 @@ import { AlgorithmPage } from '@/features/dsa/pages/algorithm-page'
 import { TopicPage } from '@/features/dsa/pages/topic-page'
 import { TopicsPage } from '@/features/dsa/pages/topics-page'
 import { LeaderboardPage } from '@/features/leaderboard/leaderboard-page'
-import { PlaygroundPage } from '@/features/submissions/pages/playground-page'
 import { SubmissionDetailPage } from '@/features/submissions/pages/submission-detail-page'
 import { SubmissionsPage } from '@/features/submissions/pages/submissions-page'
 
@@ -39,7 +38,7 @@ export const router = createBrowserRouter([
       { path: 'algorithms/:slug', element: <AlgorithmPage /> },
       { path: 'challenges', element: <ChallengesPage /> },
       { path: 'challenges/:slug', element: <ChallengePage /> },
-      { path: 'playground', element: <PlaygroundPage /> },
+      { path: 'playground', element: <Navigate to="/challenges" replace /> },
       { path: 'leaderboard', element: <LeaderboardPage /> },
       { path: 'community', element: <CommunityFeedPage /> },
       { path: 'community/:slug', element: <PostPage /> },

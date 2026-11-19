@@ -33,13 +33,13 @@ describe('App shell without an API', () => {
     expect(screen.getByText(/\d+ algorithms · \d+ visualiser modes · \d+ topics/)).toBeInTheDocument()
   })
 
-  it('explains that the API is unreachable instead of showing fake data', async () => {
+  it('explains that the backend is not working instead of showing fake data', async () => {
     render(
       <Providers>
         <App />
       </Providers>,
     )
 
-    expect(await screen.findAllByText(/api unreachable/i)).not.toHaveLength(0)
+    expect(await screen.findAllByText(/backend not working/i)).not.toHaveLength(0)
   })
 })

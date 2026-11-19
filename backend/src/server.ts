@@ -1,3 +1,6 @@
+import { spawn, type ChildProcess } from "node:child_process";
+import fs from "node:fs";
+import path from "node:path";
 import { loadEnv } from "@dsa/shared";
 import { createApp } from "./app";
 import { loadConfig } from "./config/env";
@@ -24,11 +27,38 @@ async function main(): Promise<void> {
     logger.info({ port: config.port }, "API listening");
   });
 
+  // Automatically start the execution worker alongside the API so submissions are never stuck
+  let workerChild: ChildProcess | null = null;
+  const workerDist = path.resolve(__dirname, "../../execution-worker/dist/worker.js");
+  if (fs.existsSync(workerDist) && process.env.SPAWN_WORKER !== "false") {
+    logger.info({ path: workerDist }, "spawning integrated execution worker");
+    workerChild = spawn("node", [workerDist], {
+      stdio: "inherit",
+      cwd: path.dirname(workerDist),
+    });
+    workerChild.on("error", (err) => {
+      logger.warn({ err }, "failed to spawn integrated execution worker");
+    });
+    workerChild.on("exit", (code) => {
+      if (!shuttingDown) {
+        logger.warn({ code }, "integrated execution worker exited");
+      }
+    });
+  }
+
   let shuttingDown = false;
   const shutdown = async (signal: string): Promise<void> => {
     if (shuttingDown) return;
     shuttingDown = true;
     logger.info({ signal }, "shutting down");
+
+    if (workerChild) {
+      try {
+        workerChild.kill("SIGTERM");
+      } catch {
+        // ignore
+      }
+    }
 
     const forceExit = setTimeout(() => {
       logger.error("graceful shutdown timed out");
